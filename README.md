@@ -2,9 +2,9 @@
 
 My own install script for a Lutris based installation of fusion360.
 ## Dependencies
-Wine-Stable
-Winetricks
-Lutris
+- Wine-Stable
+- Winetricks
+- Lutris
 
 ## Installation
 - start the script with 'lutris -i /path/to/installation-file.yml'
