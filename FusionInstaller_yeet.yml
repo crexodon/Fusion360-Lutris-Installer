@@ -1,0 +1,66 @@
+name: Fusion360_Unofficial
+game_slug: autodesk_fusion_360
+version: Autodesk Client
+slug: autodesk_fusion_360_autodesk_client
+runner: wine
+
+script:
+  files:
+  - fusion_installer:
+      filename: Fusion%20360%20Client%20Downloader.exe
+      url: https://dl.appstreaming.autodesk.com/production/installers/Fusion%20360%20Client%20Downloader.exe
+  - platform_py: https://raw.githubusercontent.com/python/cpython/3.7/Lib/platform.py
+  game:
+    arch: win64
+    exe: $GAMEDIR/drive_c/users/$USER/Local Settings/Application Data/Autodesk/webdeploy/production/6a0c9611291d45bb9226980209917c3d/FusionLauncher.exe
+    prefix: $GAMEDIR
+  installer:
+  - input_menu:
+      description: 'Is the ''Fusion 360 Client Downloader.exe'' in your $CACHE (default: ~/.cache/lutris/installer/autodesk_fusion_360/)?'
+      id: download
+      options:
+      - wait: Wait a bit, your connection might be slow
+      preselect: wait
+  - extract:
+      description: extracting installer
+      dst: $CACHE/fusion_installer/
+      extractor: exe
+      file: fusion_installer
+  - move:
+      description: moving installer
+      dst: $CACHE/fusion_installer/
+      src: platform_py
+  - execute:
+      command: sed -i '/maj, min, build = /c\    maj, min, build = winver[:3]' $CACHE/fusion_installer/platform.py;
+      description: patch installer 1
+  - execute:
+      command: sed -i "/return uname().system/c\    return 'Windows'" $CACHE/fusion_installer/platform.py;
+      description: patch installer 2
+  - execute:
+      command: sed -i "/return uname().release/c\    return '7'" $CACHE/fusion_installer/platform.py;
+      description: patch installer 3
+  - execute:
+      command: sed -i "/return uname().version/c\    return '6.1.7601'" $CACHE/fusion_installer/platform.py
+      description: patch installer 4
+  - task:
+      app: vcrun2017 corefonts wininet winhttp atmlib gdiplus iertutil msxml3 msxml6 urlmon win7 dxvk
+      description: doing the winetrickery
+      name: winetricks
+      prefix: $GAMEDIR
+  - task:
+      description: running the installer wit DXVK (needed to log in and change graphics driver (check video in description)
+      executable: $CACHE/fusion_installer/streamer.exe
+      name: wineexec
+      prefix: $GAMEDIR
+  - task:
+      app: dxvk=disabled
+      description: disabling dxvk
+      name: winetricks
+      prefix: $GAMEDIR
+  - task:
+      description: running fusion, check if everything works
+      executable: $GAMEDIR/drive_c/users/$USER/Local Settings/Application Data/Autodesk/webdeploy/production/6a0c9611291d45bb9226980209917c3d/FusionLauncher.exe
+      name: wineexec
+      prefix: $GAMEDIR
+  wine:
+    version: lutris-5.7-x86_64
