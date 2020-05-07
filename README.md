@@ -7,7 +7,7 @@ My own install script for a Lutris based installation of fusion360.
 - Lutris
 
 ## Installation
-- start the script with 'lutris -i /path/to/installation-file.yml'
+- start the script with `lutris -i /path/to/installation-file.yml`
 - after doing some preparation the installer will pop up and look frozen for a while (it's downloading fusion)
 - then you'll be able to log in
 - now check this video https://imgur.com/a/oZCuoP2, you'll need to go to your preferences, and change the graphics driver to directx 9 and then hit apply and not restart (instead, kill the lutris-wrapper process with your taskmanager)
